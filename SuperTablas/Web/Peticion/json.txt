@@ -1,0 +1,8 @@
+{
+    "login":"LUKERIOSSS",
+    "pass":"passsoss",
+    "role":{
+        "id":2
+    },
+    "date":"2024-04-13T08:30:00Z"
+}

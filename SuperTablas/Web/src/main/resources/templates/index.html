@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>Bie</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100"
+	onload="javascript:existSiaOK(15);">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 d-flex justify-content-center p-3"
+				style="background-color: white;">
+				<img src="static/img/search.png" th:src="@{/img/globe.gif}" 
+					alt="Search" />
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5 titulo"
+				style="font-family: Arial; font-weight: bold; color: white; background-color: #007EAE;">
+				Formulario y Calculadora</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5"
+				style="font-family: Arial; color: #6E6E6E; font-size: 1em; background-color: #F2F2F2;">
+				Formulario y Calculadora</div>
+		</div>
+		<div class="row mt-5 p-3 d-flex justify-content-center">
+			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4"></div>
+			<div
+				class="col-sm-12 col-md-8 col-lg-6 col-xl-4 justify-content-center">
+				<div class="row justify-content-center"
+					style="font-weight: bold; font-size: 1.5em;">
+					<div class="col-12">
+						<h4>Indícanos el número de oficina con el que acceder</h4>
+
+					</div>
+				</div>
+
+
+
+			</div>
+			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4"></div>
+		</div>
+
+		<form action="javascript:existSia(15)" method="POST">
+			<div class="form-row d-flex justify-content-center mb-3">
+				<div class="m-1">
+					<button type="submit" class="btn btn-primary">Post</button>
+				</div>
+				<div class="m-1">
+					<a href="/articulos" class="btn btn-warning">Cancelar</a>
+				</div>
+			</div>
+		</form>
+		
+		<form action="javascript:getSia(16)" method="GET">
+			<div class="form-row d-flex justify-content-center mb-3">
+				<div class="m-1">
+					<button type="submit" class="btn btn-primary">Get</button>
+				</div>
+				<div class="m-1">
+					<a href="/articulos" class="btn btn-warning">Cancelar</a>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+	<footer class="mt-auto d-flex justify-content-center p-3"
+		style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+		&copy; Bank, S.A. 2022 </footer>
+
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript">
+		function buscar() {
+			document.getElementById('buscarForm').submit();
+			$('#loading').modal({
+				backdrop : 'static',
+				keyboard : false
+			});
+		}
+
+		window.onload = function() {
+			$("#loging").modal("hide");
+		}
+	</script>
+
+</body>
+</html>

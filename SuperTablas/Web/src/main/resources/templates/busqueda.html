@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="master" lang="es">
+<head>
+<title>Calculadora BEI</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100"
+	onload="javascript:setOficina();">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 d-flex justify-content-center p-3"
+				style="background-color: white;">
+				<img src="static/img/logoCaixa.png" th:src="@{/img/logoCaixa.png}"
+					alt="LaCaixa" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5 titulo"
+				style="background-color: #007EAE; font-family: Arial; font-weight: bold; color: white;">
+				Calculadora BEI</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5"
+				style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+				<!-- a th:href="@{/}" style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">Calculadora BEI</a>&nbsp;> -->
+				&nbsp;Busqueda de solicitudes
+			</div>
+		</div>
+		<div class="row mt-0 p-3">
+			<div class="col-sm-0 col-md-1 col-lg-2 col-xl-3"></div>
+			<div class="col-12">
+				<h2>Busqueda de solicitudes</h2>
+				<div class="articulo">
+					<div class="col-12">
+						<h5>Filtro</h5>
+
+						<form id="filterForm" th:action="@{/busqueda}"
+							th:object="${filtro}" method="post">
+							<input type="hidden" id="numPage" name="numPage"
+								th:field="${filtro.numPage}" th:value="${filtro.numPage}" /> <input
+								type="hidden" id="perfil" name="perfil"
+								th:field="${filtro.perfil}" th:value="${filtro.perfil}" />
+							<div class="form-row row col-md-12">
+								<div class="col-md-4">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Numero
+											SIA:&nbsp;</label> <input class="form-control" id="numeroSIA"
+											name="numeroSIA" type="text" th:field="${filtro.numeroSia}"
+											th:value="${filtro.numeroSia}" placeholder="Search.." />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="input-group">
+										<label class="col-sm-1 col-form-label">&nbsp;</label>
+										<label>&nbsp;</label><label>&nbsp;</label><label>&nbsp;</label><label>&nbsp;</label>
+										<label class="col-sm-15 col-form-label">CIF:&nbsp;</label><input
+											class="form-control" id="cif" name="cif" th:field="*{cif}"
+											type="text" placeholder="Search.." />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="input-group" th:if="${filtro.perfil}=='bo'">
+										<label class="col-sm-15 col-form-label">Oficina:&nbsp;</label>
+										<input type=text class="form-control" id="oficina"
+											name="oficina" th:field="${filtro.oficina}"
+											th:value="${filtro.oficina}" />
+									</div>
+									<div class="input-group" th:if="${filtro.perfil}=='oficina'">
+										<label class="col-sm-15 col-form-label">Oficina:&nbsp;</label>
+										<input class="form-control" id="oficina"
+											th:field="${filtro.oficina}" th:value="${filtro.oficina}"
+											type="text" placeholder="Search.." readonly />
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="form-row row col-md-12">
+								<div class="col-md-4">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Fecha
+											desde:&nbsp;</label><input class="form-control" id="fechaDesde"
+											name="fechaDesde" th:field="*{fechaSolicitudOperacionIni}"
+											type="date" placeholder="Search.." />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Fecha
+											hasta:&nbsp;</label><input class="form-control" id="fechaHasta"
+											name="fechaHasta" th:field="*{fechaSolicitudOperacionFin}"
+											type="date" placeholder="Search.." />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Estado:&nbsp;</label>
+										<select class="form-control" id="estado" name="estado"
+											th:field="*{estado}">
+											<option placeholder="Search.." value=""></option>
+											<option data-typeid="Alta realizada. PDTE revisión BO"
+												value="Alta realizada. PDTE revisión BO">Alta
+												realizada. PDTE revisión BO</option>
+											<option value="Resuelta OK">Resuelta OK</option>
+											<option value="Resuelta KO">Resuelta KO</option>
+											<option value="En revisión FALTA INFO">En revisión
+												FALTA INFO</option>
+
+
+										</select>
+									</div>
+								</div>
+								<div th:object="${oficina}">
+									<input type=text class="form-control" id="oficina"
+										name="oficina" th:field="${filtro.numOficinaPerfil}"
+										th:value="${oficina.numOficinaPerfil}" hidden />
+								</div>
+							</div>
+							<br>
+							<!-- 						<a href="#" class="btn btn-primary" id="estadoInput"> -->
+							<!-- 							<i class="fa fa-download"></i> Filtrar -->
+							<!-- 						</a> -->
+							<div class="row text-right">
+								<div class="col-sm-12">
+									<button id="limpiar" type="button" class="btn btn-primary"
+										onclick="javascript:limpiarBusqueda();">Limpiar</button>
+									<button id="estadoInput" type="submit" class="btn btn-primary">Filtrar</button>
+								</div>
+							</div>
+
+						</form>
+
+
+						<br>
+						<h2>Solicitudes</h2>
+						<div
+							th:classappend="'alert-' + (${clase != null} ? ${clase} : info)"
+							th:if="${mensaje != null}" th:text="${mensaje}" class="alert">
+						</div>
+						<p>
+						<div th:if="${filtro.perfil}=='bo'">
+							<a
+								th:href="@{/altaSolicitud/} + ${filtro.numOficinaPerfil} + '/' + ${filtro.perfil}"
+								class="btn btn-success" id="submitExport"> <i
+								class="fa fa-download"></i> Alta Solicitud
+							</a> <a th:href="@{/export/all/}" class="btn btn-primary"
+								id="submitExport"> <i class="fa fa-download"></i> Exportar a
+								Excel
+							</a>
+						</div>
+						<div th:if="${filtro.perfil}=='oficina'">
+							<a
+								th:href="@{/altaSolicitud/} + ${filtro.oficina} + '/' + ${filtro.perfil}"
+								class="btn btn-success" id="submitExport"> <i
+								class="fa fa-download"></i> Alta Solicitud
+							</a> <a th:href="@{/export/oficina/} + ${filtro.oficina}"
+								class="btn btn-primary" id="submitExport"> <i
+								class="fa fa-download"></i> Exportar a Excel
+							</a>
+						</div>
+						</p>
+						<!-- Boton agregar no aplica en esta pantalla 
+					        <a class="btn btn-success mb-2" th:href="@{/productos/agregar}">Agregar</a>-->
+						<table class="table table-bordered" id="table">
+							<thead>
+								<tr>
+									<th>Número de SIA</th>
+									<th>CIF</th>
+									<th>Nombre del cliente</th>
+									<th>Oficina</th>
+									<th>Fecha Alta</th>
+									<th>Estado</th>
+									<th>Detalle</th>
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								<tr th:each="solicitud : ${listaSolicitudes}">
+									<td th:text="${solicitud.numeroSIA}"></td>
+									<td th:text="${solicitud.CIF}"></td>
+									<td th:text="${solicitud.nombreCliente}"></td>
+									<td th:text="${solicitud.oficina}"></td>
+									<td
+										th:text="${#temporals.format(solicitud.fechaAlta, 'dd/MM/yyyy')}"></td>
+									<td th:text="${solicitud.estado}"></td>
+									<td><a th:text="Ver" class="btn btn-primary"
+										th:href="@{/busqueda/detalle/} + ${solicitud.oficina} + '/' + ${solicitud.id} + '/' + ${filtro.perfil} + '/' + ${filtro.numOficinaPerfil}"></a>
+									</td>
+
+								</tr>
+								<!-- Paginador -->
+
+							</tbody>
+						</table>
+					</div>
+					<!-- 						<p><span>El titular de los datos de carácter personal podrá ejercer los derechos en relación a los mismos (acceso, portabilidad, rectificación, oposición, limitación, supresión) de acuerdo con la normativa vigente, en el APARTADO DE CORREOS 209-46080 VALENCIA o e</span>n <a rel="noopener noreferrer" href="http://www.caixabank.com/ejerciciodederechos" title="Abre en ventana nueva" target="_blank">www.caixabank.com/ejerciciodederechos</a>.</p> -->
+					<!-- 						<p><span>Así mismo, puede dirigir las reclamaciones derivadas del tratamiento de sus datos de carácter personal a la Agencia Española de Protección de datos</span> (<a rel="noopener noreferrer" href="http://www.agpd.es" title="Abre en ventana nueva" target="_blank">www.agpd.es</a>).</p> -->
+
+					<div class="form-row row col-md-12" th:if="${filtro.totalPage} > 0">
+						<div class="col-md-4">
+							<div class="input-group">
+								<label class="col-sm-15 col-form-label">&nbsp; </label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<label class="col-sm-15 col-form-label">
+									<ul class="pagination">
+										<li th:if="${filtro.numPage} > 2"><a
+											th:href="'javascript:filtrar(\'' + 1 + '\');'">Primera
+												página</a></li>
+
+										<li th:if="${filtro.numPage} > 1">&nbsp;&nbsp;<a
+											th:href="'javascript:filtrar(\'' + ${filtro.bef} + '\');'"
+											th:text="  '  Página: ' + ${filtro.bef} + '   ' "></a></li>
+										<label>&nbsp;&nbsp;</label>
+										<label th:text="'Página: ' + ${filtro.numPage}"></label>
+
+										<li th:if="${filtro.numPage} < ${filtro.totalPage}">&nbsp;&nbsp;<a
+											th:href="'javascript:filtrar(\'' + ${filtro.aft} + '\');'"
+											th:text="  '  Página: ' + ${filtro.aft} + '   ' "></a></li>
+
+										<li th:if="${filtro.aft} < ${filtro.totalPage}">&nbsp;&nbsp;<a
+											th:href="'javascript:filtrar(\'' + ${filtro.totalPage} + '\');'">Ultima
+												página</a></li>
+
+									</ul>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-0 col-md-1 col-lg-2 col-xl-3"></div>
+		</div>
+	</div>
+
+	<footer class="mt-auto d-flex justify-content-center p-3"
+		style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+		&copy; CaixaBank, S.A. 2022 </footer>
+
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

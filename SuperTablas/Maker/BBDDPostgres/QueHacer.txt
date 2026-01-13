@@ -1,0 +1,38 @@
+Instalar Postgres con Docker
+Para arrancar una base de datos Postgres con docker el proceso no puede ser más sencillo. Basta que cojamos la plantilla del fichero de configuración de Docker Compose que dejamos a continuación e invoques al comando que realizará todo el proceso.
+
+version: '2'
+services:
+    postgres:
+        image: 'postgres:latest'
+        restart: always
+        volumes:
+        - './postgres_data:/var/lib/postgresql/data'
+        environment:
+        - POSTGRES_PASSWORD=secure_pass_here
+        ports:
+        - '5432:5432'
+Guarda el fichero en local con el nombre docker-compose.yml en un directorio denominado <homeusuario>/docker/postgres si estás en Unix, o \docker\postgres si estás en Windows. La configuración **guarda los datos en el subdirectorio ./postgresdata** de forma permanentemente, puesto que si no, en cada reinicio del contenedor se perderían las bases de datos alojadas. Luego, posiciónate con un terminal de comandos en el mismo directorio que el fichero y ejecuta:
+
+docker-compose up -d
+
+Crea usuario:
+create user System with encrypted password 'Temporal01';
+
+create user matrix with encrypted password 'matrix15';
+commit;
+
+Crear BBDD
+create database bssos;
+commit;
+
+create database matrix;
+commit;
+
+Privilegios
+grant all privileges on database bssos to System;
+commit;
+
+grant all privileges on database matrix to matrix;
+commit;
+

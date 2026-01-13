@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Values>
+	<Schema>master</Schema>
+	<Tablespace>master_dat01</Tablespace>
+	<STRUCTURE_NAME>MASTER_LUKE_54_E01</STRUCTURE_NAME>
+	<PACKAGE>package com.luke.master.entitys;</PACKAGE>
+
+	<Tablas>
+
+		
+		 <Tabla Nombre_Tabla="capabilityes" Java="Capability">
+				   <Campos>
+						<Campo Nombre="id" Tipo="integer" Primary="y" Att="id" TipoJava="Long"></Campo>
+						<Campo Nombre="code" Tipo="varchar" Size="(15)" Indice="y" Null="n" Att="code" TipoJava="String"></Campo>
+						<Campo Nombre="descr" Tipo="varchar" Size="(35)" Null="n" Att="descr" TipoJava="String"></Campo>
+					</Campos>	  
+		</Tabla>
+
+		 <Tabla Nombre_Tabla="roles" Java="Role">
+				   <Campos>
+						<Campo Nombre="id" Tipo="integer" Primary="y" Att="id" TipoJava="Long"></Campo>
+						<Campo Nombre="code" Tipo="varchar" Size="(15)" Indice="y" Null="n" Att="code" TipoJava="String"></Campo>
+						<Campo Nombre="descr" Tipo="varchar" Size="(35)" Null="n" Att="desc" TipoJava="String"></Campo>
+					</Campos>	  
+		</Tabla>
+		
+	 	<Tabla Nombre_Tabla="capabilityandrole" mxn="y" Java="Capabilityandrole">
+				   <Campos>
+						<Campo Nombre="id_capability" Tipo="int4" Null="n" fk="id" tabla="capabilityes" Att="idCapability" TipoJava="Long" Inverse="id_rol"></Campo>
+						<Campo Nombre="id_rol" Tipo="int4 " Null="n" fk="id" tabla="roles" Att="idRol" TipoJava="String" Inverse="id_capability"></Campo>
+						
+					</Campos>	  
+		</Tabla>
+		
+		 <Tabla Nombre_Tabla="usuarios" Java="Usuario">
+				   <Campos>
+						<Campo Nombre="id" Tipo="integer" Primary="y" Att="id" TipoJava="Long"></Campo>
+						<Campo Nombre="id_rol" Tipo="int4" Null="n" fk="id" tabla="roles" Att="role" TipoJava="Role"></Campo>
+						<Campo Nombre="login" Tipo="varchar" Size="(15)" Indice="y" Null="n" Att="login" TipoJava="String"></Campo>
+						<Campo Nombre="pass" Tipo="varchar" Size="(15)" Null="n" Att="pass" TipoJava="String"></Campo>
+						<Campo Nombre="fecha" Tipo="timestamp DEFAULT now()" Null="n" Att="fecha" TipoJava="Timestamp"></Campo> 
+					</Campos>	  
+		</Tabla>
+		
+		
+	</Tablas>
+	
+	<Grants>
+		<Grant name="master_app" rol="all">
+		</Grant>
+		<Grant name="master_read" rol="read">
+		</Grant>
+	</Grants>
+	
+
+</Values>
