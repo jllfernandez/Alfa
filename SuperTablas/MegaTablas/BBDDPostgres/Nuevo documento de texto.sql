@@ -1,0 +1,53 @@
+
+CREATE SCHEMA "Master" AUTHORIZATION pg_database_owner;
+
+
+-- Permissions
+
+GRANT ALL ON SCHEMA "Master" TO pg_database_owner;
+GRANT USAGE ON SCHEMA "Master" TO public;
+commit;
+
+CREATE TABLE "Master".capabilityes (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	code varchar(15) NULL,
+	descr varchar(35) NULL,
+	CONSTRAINT "CAPABILITYES_pkey" PRIMARY KEY (id)
+);
+
+-- Permissions
+
+ALTER TABLE "Master".capabilityes OWNER TO postgres;
+GRANT ALL ON TABLE "Master".capabilityes TO postgres;
+
+CREATE  TABLE IF NOT EXISTS "CAPABILITYES"
+(
+ID INTEGER GENERATED ALWAYS AS identity NOT NULL,  PRIMARY KEY (ID),
+CODE varchar(15),
+DESCR varchar(35)
+) TABLESPACE pg_default; 
+
+COMMIT;
+
+CREATE TABLE IF NOT EXISTS "ROLES"
+(
+ID INTEGER GENERATED ALWAYS AS identity NOT NULL,  PRIMARY KEY (ID),
+CODE varchar(15),
+DESCR varchar(35)
+) TABLESPACE pg_default; 
+
+COMMIT;
+
+CREATE TABLE IF NOT EXISTS "CAPABILITYANDROLE"
+(
+ID_CAPABILITY int4 NOT NULL,
+ID_ROLE int4 NOT NULL
+) TABLESPACE pg_default; 
+
+COMMIT;
+
+
+GRANT DELETE, INSERT, SELECT, UPDATE ON "ROLES" TO bssos; 
+GRANT SELECT ON "ROLES" TO bssos;
+
+commit;

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Values>
+	<Schema>CEPAL</Schema>
+	<PACKAGE>package com.luke.master.entitys;</PACKAGE>
+
+	<Tablas>
+
+		<Tabla Nombre_Tabla="PROC" Seq="y" Java="Capability">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(10,0)" Primary="y"
+					Null="n" Att="id" TipoJava="Long">
+				</Campo>
+				<Campo Nombre="ID_CEPAL" Tipo="varchar2" Size="(50)" Att="cepal" TipoJava="String"></Campo>
+				<Campo Nombre="VER_CEPAL" Tipo="varchar2" Size="(5)" Att="vercepal" TipoJava="String"></Campo>
+				<Campo Nombre="FEC_INC" Tipo="date" default="sysdate" Att="fec" TipoJava="Date"></Campo>
+				<Campo Nombre="DES" Tipo="varchar2" Size="(100)" Att="desc" TipoJava="String"></Campo>
+				<Campo Nombre="BPM2_XML" Tipo="CLOB" Att="bpm" TipoJava="String"></Campo>
+
+			</Campos>
+		</Tabla>
+<!--
+		<Tabla Nombre_Tabla="FASES" Seq="y" Java="Capability">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(10,0)" Primary="y"
+					Null="n" Att="id" TipoJava="Long">
+				</Campo>
+				<Campo Nombre="ID_PROC" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="PROC">
+				</Campo>
+				<Campo Nombre="ID_CEPAL" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="COD_CEPAL" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="DES" Tipo="varchar2" Size="(100)"></Campo>
+
+			</Campos>
+		</Tabla>
+
+		<Tabla Nombre_Tabla="TRANS" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(15,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_PROC" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="PROC">
+				</Campo>
+				<Campo Nombre="ID_CEPAL" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="ID_ORIGEN" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="ID_DESTINO" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="ID_NAME" Tipo="varchar2" Size="(10)"></Campo>
+
+			</Campos>
+		</Tabla>
+		
+		<Tabla Nombre_Tabla="SIT" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(10,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_PROC" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="PROC">
+				</Campo>
+				<Campo Nombre="ID_FASES" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="FASES">
+				</Campo>
+				<Campo Nombre="ID_CEPAL" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="COD_CEPAL" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="DES" Tipo="varchar2" Size="(100)"></Campo>
+				<Campo Nombre="SIT_TPO" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="TAREA_TPO" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="GATEWAY_DIR" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="ID_ORIGENTR" Tipo="varchar2" Size="(50)"></Campo>
+				<Campo Nombre="ID_DESTINOTR" Tipo="varchar2" Size="(50)"></Campo>
+				
+
+			</Campos>
+		</Tabla>
+
+
+	<Tabla Nombre_Tabla="SIT_PLAZO" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(15,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_SIT" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="SIT">
+				</Campo>
+				<Campo Nombre="TASKNAME" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="LIMITEDESCRIPTION" Tipo="varchar2" Size="(1500)"></Campo>
+				<Campo Nombre="NOMBRE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="LIMITE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACCIONINTERRRUPCION" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITEORDEN" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="LIMITEUNIDAD" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="EXTRAUNIDAD" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACTIVO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACCIONINICIO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACCIONFIN" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACCIONVENCIMIENTO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TAREAINTERRUPCION" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="EXTRA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITENOMBRE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TAREAFIN" Tipo="varchar2" Size="(70)"></Campo>
+
+			</Campos>
+		</Tabla>
+
+	<Tabla Nombre_Tabla="SIT_FORM" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(15,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_SIT" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="SIT">
+				</Campo>
+				<Campo Nombre="TASKNAME" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACTIVO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="AUTOMATICO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="NOTIFICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="PUBLICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="REGISTRABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="FIRMADIGITAL" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="INFORMAR" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="CODIGOFORMULARIO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="COMUNICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="OBLIGATORIA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="MULTIPLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITEORDEN" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITENOMBRE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TIPOPUBLICACION" Tipo="varchar2" Size="(70)"></Campo>
+				
+			</Campos>
+		</Tabla>
+
+	<Tabla Nombre_Tabla="SIT_DOCUMENT_OUT" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(15,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_SIT" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="SIT">
+				</Campo>
+				<Campo Nombre="TASKNAME" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="PLANTILLA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="CODIGODOCUMENTO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="FIRMADIGITAL" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="OBLIGATORIA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="MULTIPLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="COMUNICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="PUBLICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITENOMBRE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="INFORMAR" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACTIVO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="REGISTRABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITEORDEN" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="AUTOMATICO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="NOTIFICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="PLANTILLAEXTERNA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TIPOPUBLICACION" Tipo="varchar2" Size="(70)"></Campo>
+
+			</Campos>
+		</Tabla>
+
+	<Tabla Nombre_Tabla="SIT_DOCUMENT_IN" Seq="y">
+			<Campos>
+				<Campo Nombre="ID" Tipo="decimal" Size="(15,0)" Primary="y"
+					Null="n">
+				</Campo>
+				<Campo Nombre="ID_SIT" Tipo="decimal" Size="(10,0)" Null="n"
+					FK="ID" Tabla="SIT">
+				</Campo>
+				<Campo Nombre="TASKNAME" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITEORDEN" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="REGISTRABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="COMUNICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="PUBLICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="MULTIPLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="NOTIFICABLE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="INFORMAR" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="FIRMADIGITAL" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="OBLIGATORIA" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="AUTOMATICO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="CODIGODOCUMENTO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="ACTIVO" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TRAMITENOMBRE" Tipo="varchar2" Size="(70)"></Campo>
+				<Campo Nombre="TIPOPUBLICACION" Tipo="varchar2" Size="(70)"></Campo>
+
+			</Campos>
+		</Tabla>
+
+		-->
+	</Tablas>
+
+	<Roles>
+		<Role name="ROL_SEG_CAL_CON">
+		</Role>
+		<Role name="ROL_USU_APL_CACCESO">
+		</Role>
+	</Roles>
+
+</Values>
