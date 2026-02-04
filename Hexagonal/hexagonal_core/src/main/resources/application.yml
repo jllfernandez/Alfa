@@ -1,0 +1,24 @@
+spring.config.import: optional:configserver:http://localhost:8888
+
+spring:
+  application:
+    name: Course
+  cloud:
+    discovery:
+      enabled: true
+  
+server:
+  port: 8081
+  
+#eureka.instance.hostname: localhost
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${eureka_url:http://127.0.0.1:8761/eureka}
+  instance:
+    hostname: 127.0.0.1
+    prefer-ip-address: true
+

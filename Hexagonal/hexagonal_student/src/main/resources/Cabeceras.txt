@@ -1,0 +1,71 @@
+@ApiResponses(value = { @ApiResponse(code = 201, message = "Created"),
+
+                     @ApiResponse(code = 400, message = "Bad Request") })
+
+       @PostMapping(value = "/documents", produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> postDocument(@RequestParam("documentContent") MultipartFile file,
+
+                     @RequestParam("expirationDate") String expirationDate, @RequestParam("documentType") String documentType,
+
+                     @RequestParam("narID") String narId);
+
+ 
+
+       @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"), @ApiResponse(code = 204, message = "No content"),
+
+                     @ApiResponse(code = 400, message = "Bad Request") })
+
+       @GetMapping(value = "/documents/{documentID}", produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> getDocument(@PathVariable("documentID") String documentId);
+
+ 
+
+       @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"), @ApiResponse(code = 204, message = "No content"),
+
+                     @ApiResponse(code = 400, message = "Bad Request") })
+
+       @PutMapping(value = "/documents/{documentID}", produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> updateDocument(@PathVariable("documentID") String documentId,
+
+                     @RequestParam("expirationDate") String expirationDate);
+
+ 
+
+       @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"), @ApiResponse(code = 204, message = "No content"),
+
+                     @ApiResponse(code = 400, message = "Bad Request") })
+
+       @DeleteMapping(value = "/documents/{documentID}", produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> deleteDocument(@PathVariable("documentID") String documentId);
+
+ 
+
+       @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
+
+       @GetMapping(value = "/version", produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> getVersion();
+
+ 
+
+ 
+
+ 
+
+ 
+
+       @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"),
+
+                     @ApiResponse(code = 405, message = "Invalid input") })
+
+       @PostMapping(value = "/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MicroserviceConstants.JSON_CONTENT_TYPE)
+
+       public ResponseEntity<Map<String, Object>> postDocument(
+
+                     @RequestPart(value = "document", required = true) MultipartFile document[],
+
+                     @RequestPart(value = "data", required = true) @Valid PdfMergeServiceRequest data);
