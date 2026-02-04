@@ -1,0 +1,1489 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="master" lang="es">
+<head>
+<title>Calculadora BEI</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script>
+	function pregunta() {
+		if (confirm('¿Estas seguro de cambiar a este estado?')) {
+			document.estado.submit()
+		}
+	}
+	function validarSegmento() {
+		const porcentajePorOtra = document.getElementById("porcentajePorOtraInput").value;
+		const porcentajeEnOtra = document.getElementById("porcentajeEnOtraInput").value;
+		const numeroEmpleadosUltimoAnyo = document.getElementById("numeroEmpleadosUltimoAnyoInput").value;
+		const factUltimoAnyo = document.getElementById("factUltimoAnyoInput").value;
+		const balanceUltimoAnyo = document.getElementById("balanceUltimoAnyoInput").value;
+		const importeCirulante = document.getElementById("importeDestinadoCirculanteInput").value;
+		const importeFinanciacion = document.getElementById("importeFinanciacionInput").value;
+		//var 30porcientoFinanciacion = importeFinanciacion * 30 / 100;
+
+		const inputs = document.getElementById("altaForm").elements;
+		const comboSegmento = inputs["segmento"];
+		const submit = "false";
+
+		if (comboSegmento.value == "PYME") {
+			if (porcentajePorOtra > 50 || porcentajeEnOtra > 50 || numeroEmpleadosUltimoAnyo > 250) {
+				window.alert('El campo de segmento debe ser “NO PYME” ');
+			} else if (balanceUltimoAnyo > 50000000 && factUltimoAnyo > 43000000) {
+				window.alert('El campo de segmento debe ser “NO PYME” ');
+			} else if (importeCirulante > 200000) {
+				window.alert('El destino circulante no es valido');
+			} else {
+				document.solicitud.submit()
+			}
+		} else if (importeCirulante > 200000) {
+			window.alert('El destino circulante no es valido');
+		} else {
+			document.solicitud.submit()
+		}
+
+	}
+</script>
+</head>
+<body class="d-flex flex-column min-vh-100"
+	onload="javascript:loadComboCnae();checkBo();setCombosInversion();validarSolicitud();">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 d-flex justify-content-center p-3"
+				style="background-color: white;">
+				<img src="static/img/logoCaixa.png" th:src="@{/img/logoCaixa.png}"
+					alt="LaCaixa" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5 titulo"
+				style="background-color: #007EAE; font-family: Arial; font-weight: bold; color: white;">
+				Calculadora BEI</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5"
+				style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+<!-- 				<a th:href="@{/}" -->
+<!-- 					style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">Calculadora -->
+<!-- 					BEI</a>&nbsp;>&nbsp;--> <a 
+					th:href="@{/} + ${oficina.numOficinaPerfil}"
+					style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">Busqueda
+					de solicitudes</a>&nbsp;>&nbsp;Detalle de solicitud
+			</div>
+		</div>
+		<div class="row mt-0 p-3">
+			<div class="col-sm-0 col-md-1 col-lg-2 col-xl-3"></div>
+			<div class="col-12">
+				<!-- 				<h2>Detalle de solicitudes</h2> -->
+				<div th:if="${solicitud.updateSolicitud}=='ok'"
+					class="alert alert-success" role="alert">Update del bloque
+					solicitud correcto!</div>
+				<div th:if="${solicitud.updateObservaciones}=='ok'"
+					class="alert alert-success" role="alert">Update del bloque
+					observaciones correcto!</div>
+				<div th:if="${solicitud.updateEstado}=='ok'"
+					class="alert alert-success" role="alert">Update del bloque
+					estado correcto!</div>
+				<div class="articulo">
+					<div class="col-12">
+						<div class="col-12 d-flex justify-content-left p-3 pl-5"
+							style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+							<h2>Solicitud</h2>
+						</div>
+						<br>
+						<div
+							th:classappend="'alert-' + (${clase != null} ? ${clase} : info)"
+							th:if="${mensaje != null}" th:text="${mensaje}" class="alert">
+						</div>
+						<!-- Boton agregar no aplica en esta pantalla 
+					        <a class="btn btn-success mb-2" th:href="@{/productos/agregar}">Agregar</a>-->
+						<form id="altaForm" name="solicitud"
+							th:action="@{/update/} + ${oficina.perfil} + '/' + ${solicitud.IdSolicitud} + '/' + ${oficina.numOficina} + '/' + ${oficina.numOficinaPerfil}"
+							th:object="${solicitud}" method="post">
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Estado : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" th:field="${solicitud.estado}"
+										th:value="${solicitud.estado}" class="form-control" readonly />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Oficina : </label>
+								</div>
+								<div class="col-md-3">
+									<div th:if="${oficina.perfil}=='bo'">
+										<input type="text" th:value="${solicitud.oficina}"
+											class="form-control" th:field="${solicitud.oficina}"
+											id="oficinaInput" readonly required />
+									</div>
+									<div th:if="${oficina.perfil}=='oficina'">
+										<label th:text="*{oficina}" class="form-control" /></label> <input
+											hidden type="text" th:value="${solicitud.oficina}"
+											th:field="${solicitud.oficina}" id="oficinaInput" readonly required />
+									</div>
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Oferta : </label>
+								</div>
+								<div class="col-md-3">
+									<select disabled class="form-control" id="oferta"
+										th:value="${solicitud.oferta}" th:field="${solicitud.oferta}">
+										<option value="4.1.4">4.1.4</option>
+										<option value="4.2.3">4.2.3</option>
+									</select>
+								</div>
+							</div>
+
+							<br> <br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Número de SIA :
+									</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" th:field="${solicitud.numeroSIA}"
+										th:value="${solicitud.numeroSIA}" class="form-control"
+										readonly />
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Fecha Solicitud
+										de Operación : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="date" class="form-control"
+										th:value="${solicitud.fechaSolicitudOperacionString}"
+										id="fechaInicioSolicitudInput"
+										th:field="${solicitud.fechaSolicitudOperacionString}" readonly />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Fecha Prevista
+										inicio : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="date" class="form-control"
+										th:value="${solicitud.fechaPrevistaInicio}"
+										id="fechaInicioSolicitudInput"
+										th:field="${solicitud.fechaPrevistaInicio}" readonly />
+								</div>
+							</div>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Cliente</h5>
+							</div>
+							<br>
+
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Nombre del
+										Cliente : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="nombreInput" class="form-control"
+										th:value="${solicitud.nombreCliente}"
+										th:field="${solicitud.nombreCliente}" readonly required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">NIF : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" th:value="${solicitud.CIF}" id="nifInput"
+										class="form-control" th:field="${solicitud.CIF}"
+										onblur="javascript:isDNI()" readonly required />
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Dirección
+										actividad cliente : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="direccionInput" class="form-control"
+										th:value="${solicitud.direccionActividad}"
+										th:field="${solicitud.direccionActividad}" readonly required />
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Población
+										actividad cliente : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="poblacionInput" class="form-control"
+										th:value="${solicitud.poblacionActividad}"
+										th:field="${solicitud.poblacionActividad}" readonly required />
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Código postal
+										actividad cliente : </label>
+								</div>
+
+								<div class="col-md-3">
+									<input type="number" id="codPostInput" maxlength="5"
+										class="form-control"
+										th:value="${solicitud.codigoPostalCliente}"
+										th:field="${solicitud.codigoPostalCliente}"
+										onblur="javascript:validaCodigoPostal()" readonly required />
+								</div>
+
+							</div>
+							<br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Segmentación cliente</h5>
+							</div>
+							<br>
+							<div class="row">
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Numero de
+										empleados último año cerrado : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="numeroEmpleadosUltimoAnyoInput"
+										th:value="${solicitud.numeroEmpleadosUltimoAnyo}"
+										th:field="${solicitud.numeroEmpleadosUltimoAnyo}"
+										onblur="javascript:validaCampoNumerico('numEmplUltimoAnyoInput')" readonly
+										required />
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Numero de
+										empleados años en curso : </label>
+								</div>
+
+								<div class="col-md-2">
+									<input type="text" id="numEmplActInput" name="numEmplActInput"
+										class="form-control"
+										th:value="${solicitud.numeroEmpleadosAnyoEnCurso}"
+										th:field="${solicitud.numeroEmpleadosAnyoEnCurso}"
+										onblur="javascript:validaCampoNumerico('numEmplActInput')" readonly
+										required />
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Facturacion
+										ultimo año cerrado : </label>
+								</div>
+
+								<div class="col-md-2">
+									<input type="text" id="factUltimoAnyoInput"
+										name="factUltimoAnyoInput" class="form-control"
+										th:value="${solicitud.facturacionUltimoAnyo}"
+										th:field="${solicitud.facturacionUltimoAnyo}"
+										onblur="javascript:validaCampoNumerico('factUltimoAnyoInput')" readonly
+										required />
+								</div>
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Facturacion año
+										en curso : </label>
+								</div>
+
+								<div class="col-md-2">
+									<input type="text" id="factActAnyoInput"
+										name="factActAnyoInput" class="form-control"
+										th:value="${solicitud.facturacionAnyoCurso}"
+										th:field="${solicitud.facturacionAnyoCurso}"
+										onblur="javascript:validaCampoNumerico('factActAnyoInput')" readonly
+										required />
+								</div>
+
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<label class="col-sm-15 col-form-label">¿En qué
+										porcentaje está participada por otra entidad no PYME? (%): </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="porcentajePorOtraInput" name="porcentajePorOtraInput"
+										th:value="${solicitud.porcentajePorOtraEntidad}"
+										th:field="${solicitud.porcentajePorOtraEntidad}"
+										onblur="javascript:validaPorcentajePor()" readonly required />
+								</div>
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Balance ultimo
+										año cerrado : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="balanceUltimoAnyoInput"
+										name="balanceUltimoAnyoInput" class="form-control"
+										th:value="${solicitud.balanceUltimoAnyo}"
+										th:field="${solicitud.balanceUltimoAnyo}"
+										onblur="javascript:validaCampoNumerico('balanceUltimoAnyoInput')" readonly
+										required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Balance año en
+										curso : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="balanceActInput" name="balanceActInput"
+										class="form-control" th:value="${solicitud.balanceAnyoCurso}"
+										th:field="${solicitud.balanceAnyoCurso}"
+										onblur="javascript:validaCampoNumerico('balanceActInput')" readonly
+										required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<label class="col-sm-15 col-form-label">¿En qué
+										porcentaje participa en otra entidad no PYME? (%) : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="porcentajeEnOtraInput" name="porcentajeEnOtraInput"
+										th:value="${solicitud.porcentajeEnOtraEntidad}"
+										th:field="${solicitud.porcentajeEnOtraEntidad}"
+										onblur="javascript:validaPorcentajeEn()" readonly required />
+								</div>
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Segmento : </label>
+								</div>
+								<div class="col-md-2">
+									<select disabled th:value="${solicitud.segmento}" class="form-control"
+										th:field="${solicitud.segmento}" id="segmento" name="segmento">
+										<option value="PYME">PYME</option>
+										<option value="NO PYME">NO PYME</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">CNAE : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" th:value="${solicitud.CNAE}"
+										id="cnaeClienteInput" class="form-control"
+										th:field="${solicitud.CNAE}" maxlength="5" readonly required />
+								</div>
+							</div>
+							<br>
+
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Operación</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Finalidad : </label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control" id="finalidad" name="finalidad"
+										th:field="${solicitud.finalidad}">
+										<option value="Inversion">Inversion</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Importe
+										Financiación : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="importeFinanciacionInput"
+										name="importeFinanciacionInput" class="form-control"
+										th:value="${solicitud.importeFinanciacion}"
+										th:field="${solicitud.importeFinanciacion}"
+										onblur="javascript:calculoImporteGarantiaBEI()" readonly required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Importe
+										garantía BEI : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="importeGarantiaBEIInput"
+										name="importeGarantiaBEIInput" class="form-control"
+										th:value="${solicitud.importeGarantiaBEI}"
+										th:field="${solicitud.importeGarantiaBEI}" readonly required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Importe
+										destinado a circulante : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="importeDestinadoCirculanteInput"
+										name="importeDestinadoCirculantInput" class="form-control"
+										th:value="${solicitud.importeDestinadoCirculante}"
+										th:field="${solicitud.importeDestinadoCirculante}" readonly required />
+								</div>
+							</div>
+							<br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Información para Report. Dirección del Proyecto de
+									Inversión</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label"> Calle : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="direccionProyInput" class="form-control"
+										th:value="${solicitud.calleProyectoInversion}"
+										th:field="${solicitud.calleProyectoInversion}" readonly required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Ciudad : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="poblacionProyInput" class="form-control"
+										th:value="${solicitud.ciudadProyectoInversion}"
+										th:field="${solicitud.ciudadProyectoInversion}" readonly required />
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Código postal :
+									</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="codPostProyInput"
+										name="codPostProyInput" class="form-control"
+										th:value="${solicitud.codigoPostalProyectoInversion}"
+										th:field="${solicitud.codigoPostalProyectoInversion}"
+										onblur="javascript:validaCodigoPostalProyInv()" readonly required />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Pais : </label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" id="paisProyInput" class="form-control"
+										th:value="${solicitud.paisProyectoInversion}"
+										th:field="${solicitud.paisProyectoInversion}" readonly required />
+								</div>
+							</div>
+							<br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Información para Report. Datos Proyectos</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">CNAE del
+										proyecto : </label>
+								</div>
+								<div class="col-md-8">
+									<select disabled class="form-control" id="cnae" name="cnae"
+										onchange="javascript:cambioCnae()"
+										th:value="${solicitud.CNAEproyecto}"
+										th:field="${solicitud.CNAEproyecto}">
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label" for="dentroFuera">Dentro/Fuera
+										: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control" id="comboDentroFuera"
+										th:field="${solicitud.dentroFuera}"
+										th:value="${solicitud.dentroFuera}">
+									</select>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Fecha Prevista
+										Inicio : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="date" class="form-control"
+										th:value="${solicitud.fechaPrevistaInicio}"
+										id="fechaInicioPrevistoInput"
+										th:field="${solicitud.fechaPrevistaInicio}" readonly />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Fecha Prevista
+										Fin : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="date" class="form-control"
+										th:value="${solicitud.fechaPrevistaFin}"
+										id="fechaFinPrevistoInput"
+										th:field="${solicitud.fechaPrevistaFin}" readonly />
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Importe Total :
+									</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="importeTotalInput"
+										name="importeTotalInput" class="form-control"
+										th:field="${solicitud.importeTotal}"
+										th:value="${solicitud.importeTotal}"
+										onblur="javascript:validaCampoNumerico('importeTotalInput')" readonly
+										required />
+								</div>
+								<div class="col-md-1" for="dentroFuera">
+									<label class="col-sm-15 col-form-label">Código NUTS:
+										&nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control" id="nuts"
+										th:value="${solicitud.nuts}" th:field="${solicitud.nuts}">
+										<option value="ES611">Almería</option>
+										<option value="ES612">Cádiz</option>
+										<option value="ES613">Córdoba</option>
+										<option value="ES614">Granada</option>
+										<option value="ES615">Huelva</option>
+										<option value="ES616">Jaén</option>
+										<option value="ES617">Málaga</option>
+										<option value="ES618">Sevilla</option>
+
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Descripción : </label>
+								</div>
+								<div class="col-md-5">
+									<textarea id="descripcionInput" class="form-control"
+										th:value="${solicitud.descripcion}"
+										th:field="${solicitud.descripcion}" maxlength="100" readonly required></textarea>
+								</div>
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Comentarios : </label>
+								</div>
+								<div class="col-md-5">
+									<textarea id="comentariosInput" class="form-control"
+										th:value="${solicitud.comentarios}"
+										th:field="${solicitud.comentarios}" maxlength="100" readonly required></textarea>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-2">
+									<label class="col-sm-15 col-form-label">¿Tiene garantía
+										adicionales? : </label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control" id="garantiaAdicional"
+										name="garantiaAdicional"
+										th:field="${solicitud.garantiasAdicionales}"
+										th:value="${solicitud.garantiasAdicionales}"
+										onchange="javascript:checkGarantias()">
+										<option value="SI">SI</option>
+										<option value="NO">NO</option>
+									</select>
+								</div>
+								<div class="col-md-2">
+									<label class="col-sm-15 col-form-label">Valor de la
+										garantía adicional : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="valorGarantiaAdicional"
+										name="valorGarantiaAdicional" class="form-control"
+										th:value="${solicitud.valorGarantiaAdicional}"
+										onblur="javascript:validaCampoNumerico('valorGarantiaAdicional')"
+										th:field="${solicitud.valorGarantiaAdicional}" readonly required />
+								</div>
+								<div class="col-md-2">
+									<label class="col-sm-15 col-form-label">Tipo de
+										garantía adicional : </label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control" id="tipoGarantiaAdicional"
+										name="tipoGarantiaAdicional"
+										th:value="${solicitud.tipoGarantiaAdicional}"
+										th:field="${solicitud.tipoGarantiaAdicional}">
+										<option value="PERSONAL" selected>PERSONAL</option>
+										<option value="PIGNORATICIA">PIGNORATICIA</option>
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-5">
+									<label class="col-sm-15 col-form-label"
+										id="inversionDestinadaLabel">¿Inversión destinada a
+										actividades que requieren autorización específica? : </label>
+								</div>
+								<div class="col-md-2">
+									<select disabled class="form-control"
+										id="inversionActividadesAutorizacionEsp"
+										name="inversionActividadesAutorizacionEsp"
+										th:field="${solicitud.inversionActividadesAutorizacionEsp}"
+										th:value="${solicitud.inversionActividadesAutorizacionEsp}"
+										onchange="javascript:checkInversionActividadesEsp()">
+										<option value="SI">SI</option>
+										<option value="NO">NO</option>
+									</select>
+								</div>
+							</div>
+
+							<label class="col-sm-15 col-form-label" style="display: none"
+								id="autorizacionEspecificaLabel">Se necesita el
+								documento obligatorio: &nbsp;</label> <label
+								class="col-sm-15 col-form-label" style="display: none"
+								id="autorizacionLabel">⦁ Autorización Específica </label> <br>
+							<div class="row">
+								<div class="col-md-5">
+									<label class="col-sm-15 col-form-label"
+										id="inversionRegadioLabel">¿Inversión en regadío? : </label>
+								</div>
+
+								<div class="col-md-2">
+									<select disabled class="form-control" id="inversionEnRegadio"
+										name="inversionEnRegadio"
+										th:field="${solicitud.inversionEnRegadio}"
+										th:value="${solicitud.inversionEnRegadio}"
+										onchange="javascript:checkInversionEnRegadio()">
+										<option value="SI">SI</option>
+										<option value="NO">NO</option>
+									</select>
+								</div>
+							</div>
+							<label class="col-sm-15 col-form-label" style="display: none"
+								id="documentosLabel">Se necesitan los documentos
+								obligatorios : &nbsp;</label> <label class="col-sm-15 col-form-label"
+								style="display: none" id="certificadoLabel">⦁
+								Certificado expedido por la comunidad de regantes
+								correspondiente que confirma la disponibilidad de agua para el
+								riego. </label> <label class="col-sm-15 col-form-label"
+								style="display: none" id="resolucionLabel">⦁ Resolución
+								de la Autoridad de Cuenca de la disponibilidad de agua para el
+								riego. &nbsp;</label> <label class="col-sm-15 col-form-label"
+								style="display: none" id="compromisoLabel">⦁ Compromiso
+								de ahorro y reducción del consumo. Informe elaborado por un
+								técnico competente con una evaluación previa del ahorro de agua
+								de riego en la explotación para garantizar que los requisitos de
+								elegibilidad se ajustan a lo establecido en el artículo 46 del
+								Reglamento (UE) 1305/2013 &nbsp;</label> <br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Cálculos de Ayudas</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-6"></div>
+								<div class="col-md-4">
+									<label class="col-sm-15 col-form-label">Importe de
+										ayudas declaradas recibidas últimos 3 años : </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" id="importeAyudasInput"
+										name="importeAyudasInput" class="form-control"
+										onblur="javascript:validaCampoNumerico('importeAyudasUltimosTresAnyos')"
+										th:field="${solicitud.importeAyudasUltimosTresAnyos}"
+										th:value="${solicitud.importeAyudasUltimosTresAnyos}" readonly required />
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Otros : </label>
+								</div>
+								<div class="col-md-11">
+									<input type="text" id="otrosInput" class="form-control"
+										th:value="${solicitud.otros}" th:field="${solicitud.otros}" readonly
+										required />
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-11"></div>
+								<div class="col-md-1">
+									<!-- 									<button id="btnAceptarAltaSolicitud" type="submit" -->
+									<!-- 										class="btn btn-success" name="action" value="aceptar">Guardar</button> -->
+									<input type=button disabled class="btn btn-success"
+										onclick="validarSegmento()" value="Guardar">
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-11"></div>
+								<div class="col-md-1">
+									<button disabled
+										th:if="${solicitud.estado}=='En revisión FALTA INFO'"
+										id="btnAceptarAltaSolicitud" type="submit"
+										class="btn btn-success" name="action" value="aceptar">Enviar
+										a BO</button>
+								</div>
+							</div>
+
+							<input type="hidden" id="oficina" name="oficina"
+								th:field="${oficina.numOficina}"
+								th:value="${oficina.numOficina}" /> <input type="hidden"
+								id="perfil" name="perfil" th:field="${oficina.perfil}"
+								th:value="${oficina.perfil}" /> <input type="hidden"
+								id="idSolicitud" name="idSolicitud"
+								th:field="${solicitud.IdSolicitud}"
+								th:value="${solicitud.IdSolicitud}" />
+						</form>
+						<form id="altaForm"
+							th:action="@{/updateObservaciones/} + ${oficina.perfil} + '/' + ${solicitud.IdSolicitud} + '/' + ${oficina.numOficina} + '/' + ${oficina.numOficinaPerfil}"
+							th:object="${solicitud}" method="post">
+							<div class="form-row row col-md-12">
+								<div class="col-md-6">
+									<div class="input-group"></div>
+								</div>
+							</div>
+							<br>
+							<br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h2>Observaciones</h2>
+							</div>
+							<br>
+							<div th:if="${oficina.perfil}=='oficina'">
+								<div class="row">
+									<div class="col-md-1">
+										<label class="col-sm-15 col-form-label">Observaciones
+											BO : </label>
+									</div>
+									<div class="col-md-11">
+										<textarea cols="40" rows="5" class="form-control"
+											th:value="${solicitud.observacionesBo}"
+											th:field="${solicitud.observacionesBo}" readonly></textarea>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-11"></div>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-success" disabled>Guardar</button>
+									</div>
+								</div><br>
+								<div class="row">
+									<div class="col-md-1">
+										<label class="col-sm-15 col-form-label">Observaciones
+											Oficina : </label>
+									</div>
+									<div class="col-md-11">
+										<textarea cols="40" rows="5" class="form-control"
+											th:value="${solicitud.observacionesOficina}"
+											th:field="${solicitud.observacionesOficina}" readonly maxlength="2000"></textarea>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-11"></div>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-success" disabled>Guardar</button>
+									</div>
+								</div><br>
+							</div>
+							<div th:if="${oficina.perfil}=='bo'">
+								<div class="row">
+									<div class="col-md-1">
+										<label class="col-sm-15 col-form-label">Observaciones
+											BO : </label>
+									</div>
+									<div class="col-md-11">
+										<textarea cols="40" rows="5" class="form-control"
+											th:value="${solicitud.observacionesBo}"
+											th:field="${solicitud.observacionesBo}" readonly maxlength="2000"></textarea>
+									</div>
+								</div>
+<br>
+								<div class="row">
+									<div class="col-md-11"></div>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-success" disabled>Guardar</button>
+									</div>
+								</div><br>
+								<div class="row">
+									<div class="col-md-1">
+										<label class="col-sm-15 col-form-label">Observaciones
+											Oficina : </label>
+									</div>
+									<div class="col-md-11">
+										<textarea cols="40" rows="5" class="form-control"
+											th:value="${solicitud.observacionesOficina}"
+											th:field="${solicitud.observacionesOficina}" readonly></textarea>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-11"></div>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-success" disabled>Guardar</button>
+									</div>
+								</div><br>
+							</div>
+
+							<input type="hidden" id="oficina" name="oficina"
+								th:field="${oficina.numOficina}"
+								th:value="${oficina.numOficina}" /> <input type="hidden"
+								id="perfil" name="perfil" th:field="${oficina.perfil}"
+								th:value="${oficina.perfil}" /> <input type="hidden"
+								id="idSolicitud" name="idSolicitud"
+								th:field="${solicitud.IdSolicitud}"
+								th:value="${solicitud.IdSolicitud}" />
+						</form>
+						<form id="altaForm" name="estado"
+							th:action="@{/updateEstado/} + ${oficina.perfil} + '/' + ${solicitud.IdSolicitud} + '/' + ${oficina.numOficina} + '/' + ${oficina.numOficinaPerfil}"
+							th:object="${solicitud}" method="post">
+							<br>
+							<div th:if="${oficina.perfil}=='bo'">
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h2>Cambio de estado</h2>
+							</div>
+							<br>
+							<!-- Solo mostramos si el perfil conectado es BO -->
+							
+								
+								<div class="form-row row col-md-12">
+									<div class="col-md-6">
+										<div class="input-group">
+											<label class="col-sm-15 col-form-label">Estado : </label>
+											<div class="col-md-6">
+												<select class="form-control" id="estado"
+													th:value="${solicitud.estado}"
+													th:field="${solicitud.estado}">
+													<option
+														value="Alta realizada
+													PDTE revisión BO">Alta
+														realizada PDTE revisión BO</option>
+													<option value="En revisión">En revisión</option>
+													<option value="Resuelta OK">Resuelta OK</option>
+													<option value="Resuelta KO">Resuelta KO</option>
+													<option value="En revisión FALTA INFO">En revisión
+														FALTA INFO</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br>
+
+								<div class="row">
+									<div class="col-md-11"></div>
+									<div class="col-md-1">
+										<input type=button class="btn btn-success"
+											onclick="pregunta()" value="Guardar">
+									</div>
+								</div>
+
+								<input type="hidden" id="oficina" name="oficina"
+								th:field="${oficina.numOficina}"
+								th:value="${oficina.numOficina}" /> <input type="hidden"
+								id="perfil" name="perfil" th:field="${oficina.perfil}"
+								th:value="${oficina.perfil}" /> <input type="hidden"
+								id="idSolicitud" name="idSolicitud"
+								th:field="${solicitud.IdSolicitud}"
+								th:value="${solicitud.IdSolicitud}" />
+								</div>
+						</form>
+						<br>
+						<form id="calculadoraForm"
+							th:action="@{/updateCalculadora/} + ${oficina.perfil} + '/' + ${solicitud.IdSolicitud} + '/' + ${oficina.numOficina} + '/' + ${oficina.numOficinaPerfil}"
+							th:object="${solicitud}" method="post">
+							<div th:if="${oficina.perfil}=='bo'" class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h2>Calculadora</h2>
+							</div>
+							<br>
+							<h5 th:if="${oficina.perfil}=='bo'"></h5>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento} =='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-12">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">NO PYME : </label>
+									</div>
+								</div>
+
+							</div>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Tasa de la
+											Garantía : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" value="80%" readonly />
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Total Préstamo
+											: </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" id="importeTotal"
+											th:value="${solicitud.totalPrestamo}"
+											th:field="${solicitud.totalPrestamo}" readonly>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Vencimiento en
+											años : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:value="${solicitud.vencimientoNoPyme}"
+											th:field="${solicitud.vencimientoNoPyme}" readonly>
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">ESB : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											name="esbNoPymeCalculado" id="esbNoPymeCalculado"
+											th:field="${solicitud.esbNoPyme}"
+											th:value="${solicitud.esbNoPyme}" readonly />
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='NO PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;</label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<button disabled class="btn btn-success" type="button" method="POST"
+											th:action="@{/calculoNoPyme/}" th:object="${solicitud}"
+											onclick="javascript:submitNoPyme();">Calcular</button>
+									</div>
+									<div class="form-row row col-md-12">
+										<div class="col-md-6">
+											<div class="input-group"></div>
+										</div>
+									</div>
+								</div>
+								<br>
+								<br>
+							</div>
+
+							<!-- Calculo PYME -->
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-12">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">PYME : </label>
+									</div>
+								</div>
+
+							</div>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Tasa de la
+											Garantía : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" value="80%" readonly />
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Margen : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" value="0%" readonly />
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Total Préstamo
+											: </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" id="importeTotal"
+											th:field="${solicitud.totalPrestamo}"
+											th:value="${solicitud.totalPrestamo}" readonly/>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Vencimiento
+											(en meses) : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:field="${solicitud.vencimientoPyme}"
+											th:value="${solicitud.vencimientoPyme}" readonly/>
+
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Carencia (en
+											meses) : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:field="${solicitud.carencia}"
+											th:value="${solicitud.carencia}" readonly/>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Rating : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<select disabled class="col-md-12-custom" id="rating"
+											th:field="${solicitud.rating}">
+											<option value="AAA">AAA</option>
+											<option value="AA+">AA+</option>
+											<option value="AA">AA</option>
+											<option value="AA-">AA-</option>
+											<option value="A+">A+</option>
+											<option value="A">A</option>
+											<option value="A-">A-</option>
+
+											<option value="BBB+">BBB+</option>
+											<option value="BBB">BBB</option>
+											<option value="BBB-">BBB-</option>
+											<option value="BB+">BB+</option>
+											<option value="BB">BB</option>
+											<option value="BB-">BB-</option>
+											<option value="B+">B+</option>
+											<option value="B">B</option>
+											<option value="B-">B-</option>
+											<option value="CCC+ or por debajo">CCC+ or por
+												debajo</option>
+
+										</select>
+
+										<!-- input type="text" class="form-control"
+											th:field="${solicitud.rating}" 
+											th:value="${solicitud.rating}"/>
+ 										-->
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Tipo de
+											referencia : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:value="${solicitud.referencia}"
+											th:field="${solicitud.referencia}" readonly/>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">Pagos por
+											periodo : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:value="${solicitud.pagosPeriodo}"
+											th:field="${solicitud.pagosPeriodo}" readonly/>
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;</label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<button disabled class="btn btn-success" type="button" method="POST"
+											th:action="@{/calculoPyme/}" th:object="${solicitud}"
+											onclick="javascript:submitPyme();">Calcular</button>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">ESB : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:field="${solicitud.esbPyme}"
+											th:value="${solicitud.esbPyme}" readonly />
+
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${solicitud.segmento}=='PYME' and ${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;</label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<button disabled type="submit" class="btn btn-success">Guardar</button>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="oficina" name="oficina"
+								th:field="${oficina.numOficina}"
+								th:value="${oficina.numOficina}" /> <input type="hidden"
+								id="perfil" name="perfil" th:field="${oficina.perfil}"
+								th:value="${oficina.perfil}" /> <input type="hidden"
+								id="idSolicitud" name="idSolicitud"
+								th:field="${solicitud.IdSolicitud}"
+								th:value="${solicitud.IdSolicitud}" />
+						</form>
+						<br>
+						<form id="tomaDecisionesForm"
+							th:action="@{/updateDecisiones/} + ${oficina.perfil} + '/' + ${solicitud.IdSolicitud} + '/' + ${oficina.numOficina} + '/' + ${oficina.numOficinaPerfil}"
+							th:object="${solicitud}" method="post">
+							<div th:if="${oficina.perfil}=='bo'" class="col-12 d-flex justify-content-left p-3 pl-5"
+							style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+							<h2>Toma de decisiones</h2>
+						</div>
+							<br>
+							<h5 th:if="${oficina.perfil}=='bo'"></h5>
+							<div class="form-row row col-md-12"
+								th:if="${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp;
+											Segmento : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control" id="segmento"
+											name="segmento" th:value="${solicitud.segmento}" readonly />
+									</div>
+								</div>
+
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp;
+											ESB calculado : </label>
+									</div>
+								</div>
+								<div class="col-md-3" th:if="${solicitud.segmento}=='PYME'">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											name="esbPymeCalculado" id="esbPymeCalculado"
+											th:value="${solicitud.esbPyme}" readonly />
+									</div>
+								</div>
+								<div class="col-md-3" th:if="${solicitud.segmento}=='NO PYME'">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:value="${solicitud.esbNoPyme}" readonly />
+									</div>
+								</div>
+
+							</div>
+
+							<div class="form-row row col-md-12"
+								th:if="${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp;
+											Finalidad : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											th:value="${solicitud.finalidad}" readonly />
+									</div>
+								</div>
+
+							</div>
+
+
+							<div class="form-row row col-md-12"
+								th:if="${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp;
+											Importe Ayudas declaradas : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											id="importeAyudasUltimosTresAnyosCal"
+											name="importeAyudasUltimosTresAnyosCal"
+											th:value="${solicitud.importeAyudasUltimosTresAnyos}"
+											readonly />
+									</div>
+								</div>
+
+							</div>
+
+							<!-- 							<div class="form-row row col-md-12" -->
+							<!-- 								th:if="${oficina.perfil}=='bo'"> -->
+							<!-- 								<div class="col-md-1"> -->
+							<!-- 									<div class="input-group"> -->
+							<!-- 										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label> -->
+							<!-- 									</div> -->
+							<!-- 								</div> -->
+							<!-- 								<div class="col-md-5"> -->
+							<!-- 									<div class="input-group"> -->
+							<!-- 										<label class="col-sm-15 col-form-label">&nbsp;</label> -->
+							<!-- 									</div> -->
+							<!-- 								</div> -->
+							<!-- 								<div class="col-md-3"> -->
+							<!-- 									<div class="input-group"> -->
+							<!-- 										<button class="btn btn-success" type="button" -->
+							<!-- 											th:object="${solicitud}" -->
+							<!-- 											onclick="javascript:validarSolicitud();">Validar -->
+							<!-- 											Solicitud</button> -->
+
+							<!-- 									</div> -->
+							<!-- 								</div> -->
+							<!-- 							</div> -->
+
+							<div class="form-row row col-md-12"
+								th:if="${oficina.perfil}=='bo'">
+								<div class="col-md-1">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp; </label>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="input-group">
+										<label class="col-sm-15 col-form-label">&nbsp;&nbsp;
+											Resultado de la Validación : </label>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											id="resultadoValidacion" name="resultadoValidacion"
+											th:value="${solicitud.resultadoValidacion}"
+											th:field="${solicitud.resultadoValidacion}" readonly />
+									</div>
+								</div>
+
+							</div>
+
+
+							<input type="hidden" id="oficina" name="oficina"
+								th:field="${oficina.numOficina}"
+								th:value="${oficina.numOficina}" /> <input type="hidden"
+								id="perfil" name="perfil" th:field="${oficina.perfil}"
+								th:value="${oficina.perfil}" /> <input type="hidden"
+								id="idSolicitud" name="idSolicitud"
+								th:field="${solicitud.IdSolicitud}"
+								th:value="${solicitud.IdSolicitud}" />
+
+						</form>
+						<br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="mt-auto d-flex justify-content-center p-3"
+		style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+		&copy; CaixaBank, S.A. 2022 </footer>
+
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

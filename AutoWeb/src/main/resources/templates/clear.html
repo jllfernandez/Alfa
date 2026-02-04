@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>JSon</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script type="text/javascript" th:src="@{/js/tree/renderer.js}"></script>
+<script type="text/javascript" th:src="@{/js/tree/core.js}"></script>
+<script type="text/javascript">
+	
+	
+	function getTree2() {
+		var tree2 = JSON.parse(localStorage.getItem("tree2"));
+		//sessionStorage
+					
+		if(null == tree2 || "null" == tree2) {
+			tree2 = new Array;
+			tree2[0] = "1|0|Root|1";
+			
+			localStorage.setItem("tree2", JSON.stringify(tree2));
+		} 
+		
+		return tree2;
+				
+	}
+	
+
+	
+	function mountArbol() {
+		peticionGetAjax('/Bie/cargaTree2', cbMountArbol);
+	}
+	
+	function cbMountArbol(response) {
+		
+		const json_data = response;
+	
+		var result = new Array;
+
+		for ( var i in json_data) {
+			result[i] = "" + json_data[i].nodeId + "|"
+					+ json_data[i].parentNodeId + "|" + json_data[i].nodeName
+					+ "|" + json_data[i].nodeType;
+	
+		}
+
+		localStorage.setItem("tree2", JSON.stringify(result));
+		location.reload();
+		return ;
+	}
+</script>
+</head>
+
+<body>
+
+
+	<b><a href="http://www.destroydrop.com/">destroydrop</a> &raquo; <a
+		href="http://www.destroydrop.com/javascripts/">JavaScripts</a> Aaa <a
+		href="http://www.destroydrop.com/javascripts/tree/">Tree</a></b>
+	<br />
+
+	<br />
+	<br />
+
+	<b>Example 1:</b>
+	<br />
+	<br />
+ 
+	
+	<div class="tree" id="tree3">
+		<script type="text/javascript">
+		
+		
+		var tr = getTree2();
+		mountTree(tr);
+		
+		localStorage.removeItem("tree2");
+		
+		
+			
+		</script>
+	</div>
+
+	<br />
+	<br />
+
+	<a href="javascript:mountArbol();">Peticion Ajax II</a>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>Tree</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/tree.js}"></script>
+<script type="text/javascript">
+	function doit(s) {
+		alert('-->' + s);
+	}
+	
+	function leeTree(){
+		var tree = document.getElementById("tree").value;
+		alert(JSON.parse(tree));
+	}
+
+	var Tree = new Array;
+	//// nodeId | parentNodeId | nodeName | nodeUrl
+	Tree[0] = "1|0|Page 1|#";
+	Tree[1] = "2|1|Page 1.1|#";
+	Tree[2] = "3|1|Page 1.2|#";
+	Tree[3] = "4|3|Page 1.2.1|javascript:doit('Page 1.2.1')";
+	Tree[4] = "5|1|Page 1.3|#";
+	Tree[5] = "6|2|Page 1.1.1|#";
+	Tree[6] = "7|6|Page 1.1.1.1|#";
+	Tree[7] = "8|6|Page 1.1.1.2|#";
+	Tree[8] = "9|1|Page 1.4|#";
+	Tree[9] = "10|9|Page 1.4.1|#";
+	Tree[10] = "11|0|Page 2|javascript:doit('Page 2')";
+		
+</script>
+</head>
+
+<body onload="javascript:leeTree();" th:object="${documentoFilter}">
+
+ <input type="hidden" id="tree" th:value="${documentoFilter}"/>
+ 
+	<b><a href="http://www.destroydrop.com/">destroydrop</a> &raquo; <a
+		href="http://www.destroydrop.com/javascripts/">JavaScripts</a> Aaa <a
+		href="http://www.destroydrop.com/javascripts/tree/">Tree</a></b>
+	<br />
+
+	<br />
+	<br />
+
+	<b>Example 1:</b>
+	<br />
+	<br />
+
+	<div class="tree">
+		<script type="text/javascript">
+			createTree(Tree);
+			
+		</script>
+	</div>
+
+	<br />
+	<br />
+
+	<a href="mailto:drop@destroydrop.com">drop@destroydrop.com</a>
+
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>JSon</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/tree.js}"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script type="text/javascript">
+	
+	function getTree() {
+		var tree = JSON.parse(localStorage.getItem("tree"));
+		//sessionStorage
+					
+		if(null == tree || "null" == tree) {
+			tree = new Array;
+			tree[0] = "1|0|Page 1|javascript:ocultar()";
+			
+			localStorage.setItem("tree", JSON.stringify(tree));
+		} 
+		
+		return tree;
+	}
+	
+	function getTree2() {
+		var tree2 = JSON.parse(localStorage.getItem("tree2"));
+		//sessionStorage
+					
+		if(null == tree2 || "null" == tree2) {
+			tree2 = new Array;
+			tree2[0] = "1|0|Root|1";
+			
+			localStorage.setItem("tree2", JSON.stringify(tree));
+		} 
+		
+		return tree2;
+				
+		//mountTree(arbol);
+	}
+	
+
+	function ocultar() {
+		onOffDiv("tree2", false);
+	}
+
+	function mostrar() {
+		onOffDiv("tree2", true);
+	}
+
+	function cargaTree() {
+		peticionGetAjax('/Bie/cargaTree', cbCargaTree);
+	}
+	
+	
+	
+	function cbCargaTree(response) {
+		
+		const json_data = response;
+	
+		var result = new Array;
+
+		for ( var i in json_data) {
+			//result.push([json_data [i].nodeId+"|"+json_data [i].parentNodeId+"|"+json_data [i].nodeName+"|"+json_data [i].nodeUrl]);
+			result[i] = "" + json_data[i].nodeId + "|"
+					+ json_data[i].parentNodeId + "|" + json_data[i].nodeName
+					+ "|" + json_data[i].nodeUrl;
+	
+		}
+
+		localStorage.setItem("tree", JSON.stringify(result));
+		//createTree(Tree);
+		//createTree(Tree.concat(result));
+			//createElementTree("tree", result);
+		//document.getElementById("tree").innerHTML.reload;
+		//document.innerHTML.reload;
+		//onOffDiv("tree", true);
+		location.reload();
+		return ;//result;
+	}
+	
+	
+</script>
+</head>
+
+<body>
+
+
+	<b><a href="http://www.destroydrop.com/">destroydrop</a> &raquo; <a
+		href="http://www.destroydrop.com/javascripts/">JavaScripts</a> Aaa <a
+		href="http://www.destroydrop.com/javascripts/tree/">Tree</a></b>
+	<br />
+
+	<br />
+	<br />
+
+	<b>Example 1:</b>
+	<br />
+	<br />
+ 
+	<div class="tree" id="tree">
+		<script type="text/javascript">
+		
+		//var Tree = new Array;
+		//// nodeId | parentNodeId | nodeName | nodeUrl
+		//Tree[0] = "1|0|Page 1|#";
+		//onOffDiv("tree", false);
+		
+		var treee = getTree();
+		createTree(treee);
+		
+		localStorage.removeItem("tree");
+		
+		//onOffDiv("tree", true);
+			
+		</script>
+	</div>
+	 
+	<div class="tree" id="tree2">
+		<script type="text/javascript">
+		
+		var mtree = new Array;
+		//// nodeId | parentNodeId | nodeName | nodeUrl
+		mtree[0] = "1|0|Page 1|javascript:ocultar()";
+		//onOffDiv("tree2", false);
+		
+		createTree(mtree);
+		
+		//onOffDiv("tree2", true);
+		
+			
+		</script>
+	</div>
+	
+
+
+	<br />
+	<br />
+
+	<a href="javascript:mostrar();">Mostrar</a>
+	<br>
+	<a href="javascript:cargaTree();">Peticion Ajax</a>
+	
+
+</body>
+
+</html>

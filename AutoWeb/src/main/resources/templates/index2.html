@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head> 
+    <title>Formulario y Calculadora</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />    
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} "/>    
+    <link rel="stylesheet" href="static/css/nero.css" th:href="@{/css/nero.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+	<div class="container-fluid" >
+  		<div class="row">
+  			<div class="col-12 d-flex justify-content-center p-3"  style="background-color: white;">
+  				<img src="static/img/logoCaixa.png" th:src="@{/img/logoCaixa.png}" alt="LaCaixa"/>
+  			</div>
+  		</div>
+  		<div class="row">
+  			<div  class="col-12 d-flex justify-content-left p-3 pl-5 titulo"  style=" font-family: Arial; font-weight: bold; color: white; background-color: #007EAE;">
+  				Formulario y Calculadora
+  			</div>
+  		</div>
+  		<div class="row">
+  			<div class="col-12 d-flex justify-content-left p-3 pl-5"  style="font-family: Arial; color: #6E6E6E; font-size: 1em; background-color: #F2F2F2;">
+  				Formulario y Calculadora
+  			</div>
+  		</div>
+  		<div class="row mt-5 p-3 d-flex justify-content-center">
+  			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4">
+  			</div>
+  			<div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 justify-content-center" >
+  				<div class="row justify-content-center" style="font-weight: bold; font-size: 1.5em;">
+  					<div class="col-12">
+  						<h4>Indícanos el número de oficina con el que acceder</h4>
+						
+  					</div>  					
+  				</div>
+  		
+  				
+  				<div class="row mt-3  justify-content-center">
+  					<div class="col-12">
+	  					<div class="row mt-3">
+				  			<div class="col-12" style="color: #04a3df; font-weight: bold; font-size: 0.8em; cursor: pointer;">
+				  				<form id="buscarForm" action="#" th:action="@{/}" th:object="${oficina}" method="post"> <!-- th:href="{/procesaOficina} + numOficina" -->
+				  				    <div class="input-group" style="max-width: 400px;">
+							            <input class="form-control py-2" type="search" value="" th:field="*{numOficina}" id="numOficina" maxlength="15">
+							            <span class="input-group-append">
+							                <button class="btn btn-light" type="button" style="border-color: #ced4da;" data-toggle="modal" data-target="#loading" th:onclick="buscar()">
+							                    <!-- <i class="fa fa-search"></i> --> 
+							                    <img src="static/img/search.png" th:src="@{/img/search.png}" alt="Buscar"/>
+							                </button>
+							            </span>
+							        </div>				         
+							    </form>
+							 </div>
+						</div>
+				        <div class="row mt-3">
+				  			<div class="col-12" style="color: #04a3df; font-weight: bold; font-size: 0.8em; cursor: pointer;">
+				  				<a th:href="@{datosPersonales}">Tratamiento de datos personales</a>
+				  			</div>
+				  		</div>				
+			  		</div>    
+				</div>			  				
+  			</div>
+  			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4">			
+  			</div>  			
+  		</div>
+  		<div class="row mt-4 p-3 d-flex justify-content-center">
+  			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4">
+  			</div>
+  			<div class="col-sm-12 col-md-8 col-lg-6 col-xl-4   justify-content-center">
+  				<div class="row align-items-center h-100">
+		  				<div class="col-2 mx-auto">
+			  				<div th:if="${oficina.informado}=='true'">
+								<img src="static/img/factura1.png" th:src="@{/img/factura1.png}" width="60px;" alt="Encontrada"/>
+							</div>
+							 
+							<div th:if="${oficina.informado}=='false'">
+								<img src="static/img/facturaError.png" th:src="@{/img/facturaError.png}" width="60px;" alt="Error"/>
+							</div>
+						</div>
+		  				<div class="col-10" style="font-weight: bold; font-size: 1.5em;">
+							<h4><span th:text=" ${oficina.errorMsg != null} ? ${oficina.errorMsg} "></span></h4>
+						</div>		  	
+					
+					<div th:if="${oficina.informado}=='true'">
+						<a th:href="@{/busqueda/} + ${oficina.numOficina} + '/' + ${oficina.perfil}">Búsqueda</a>
+					</div>
+					
+		  		</div>	  				
+  			</div>
+  			<div class="col-sm-0 col-md-2 col-lg-3 col-xl-4">	
+  			</div>  			
+  		</div>
+  		
+  		<!-- Modal 
+		<div class="modal fade bd-example-modal-sm" id="loading" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+		    <div class="modal-content">      
+		      <div class="modal-body  d-flex justify-content-center p-3">
+		     	<img src="static/img/loading.gif" th:src="@{/img/loading.gif}" alt="Cargando"/>
+		      </div>
+		      <div class="modal-footer justify-content-center" style="border-top: 0px;">  
+		      	Buscando Factura....    
+		      </div>
+		    </div>
+		  </div>
+		</div>
+  		-->
+	</div>
+	
+	<footer class="mt-auto d-flex justify-content-center p-3" style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+		&copy; CaixaBank, S.A. 2022
+	</footer>
+       
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript">
+		function buscar(){
+		 	document.getElementById('buscarForm').submit();
+		 	$('#loading').modal({
+				backdrop: 'static',
+				keyboard: false
+			});
+		}
+		
+		window.onload = function(){
+			 $("#loging").modal("hide");
+		}
+	</script>
+	
+</body>
+</html>
