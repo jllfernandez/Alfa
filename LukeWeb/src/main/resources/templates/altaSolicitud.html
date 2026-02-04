@@ -1,0 +1,673 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>Calculadora BEI</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script>
+	function pregunta() {
+		if (confirm('¿Estas seguro de cambiar a este estado?')) {
+			document.estado.submit()
+		}
+	}
+	function validarSegmento() {
+		const porcentajePorOtra = document.getElementById("porcentajePorOtraInput").value;
+		const porcentajeEnOtra = document.getElementById("porcentajeEnOtraInput").value;
+		const numeroEmpleadosUltimoAnyo = document.getElementById("numEmplUltimoAnyoInput").value;
+		const factUltimoAnyo = document.getElementById("factUltimoAnyoInput").value;
+		const balanceUltimoAnyo = document.getElementById("balanceUltimoAnyoInput").value;
+		const importeCirulante = document.getElementById("importeDestinadoCirculanteInput").value;
+		const importeFinanciacion = document.getElementById("importeFinanciacionInput").value;
+		//var 30porcientoFinanciacion = importeFinanciacion * 30 / 100;
+
+		const inputs = document.getElementById("altaForm").elements;
+		const comboSegmento = inputs["segmento"];
+		const submit = "false";
+
+		if (comboSegmento.value == "PYME") {
+			if (porcentajePorOtra > 50 || porcentajeEnOtra > 50 || numeroEmpleadosUltimoAnyo > 250) {
+				window.alert('El campo de segmento debe ser “NO PYME” ');
+			} else if (balanceUltimoAnyo > 50000000 && factUltimoAnyo > 43000000) {
+				window.alert('El campo de segmento debe ser “NO PYME” ');
+			} else if (importeCirulante > 200000) {
+				window.alert('El destino circulante no es valido');
+			} else {
+				document.solicitud.submit()
+			}
+		} else if (importeCirulante > 200000) {
+			window.alert('El destino circulante no es valido');
+		} else {
+			document.solicitud.submit()
+		}
+
+	}
+</script>
+</head>
+
+<body class="d-flex flex-column min-vh-100"
+	onload="javascript:loadComboCnae();checkBo();setCombosInversion();">
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 d-flex justify-content-center p-3"
+				style="background-color: white;">
+				<img src="static/img/logoCaixa.png" th:src="@{/img/logoCaixa.png}"
+					alt="LaCaixa" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 d-flex justify-content-left p-3 pl-5 titulo"
+				style="font-family: Arial; font-weight: bold; color: white; background-color: #007EAE;">
+				Calculadora BEI</div>
+		</div>
+		<div class="row">
+		<div class="col-12 d-flex justify-content-left p-3 pl-5"
+			style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+<!-- 			<a th:href="@{/}" -->
+<!-- 				style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">Calculadora -->
+<!-- 				BEI</a>&nbsp;>&nbsp;--> <a 
+				th:href="@{/} + ${solicitud.oficina}"
+				style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">Busqueda
+				de solicitudes</a>&nbsp;>&nbsp;Alta de solicitud
+		</div>
+		</div>
+<div class="row mt-0 p-3">
+			<div class="col-sm-0 col-md-1 col-lg-2 col-xl-3"></div>
+			<div class="col-12">
+				<form id="altaForm" name="solicitud" th:action="@{/doAlta/} + ${oficina.numOficinaPerfil}"
+					th:object="${solicitud}" method="post">
+					<input type="hidden" id="perfil" name="perfil"
+						th:field="${solicitud.perfil}" th:value="${solicitud.perfil}" />
+					<input type="hidden" id="perfil" name="fechaSolicitudOperacion"
+						th:field="${solicitud.fechaSolicitudOperacion}"
+						th:value="${solicitud.fechaSolicitudOperacion}" /> <input
+						type="hidden" id="estado" name="estado"
+						th:field="${solicitud.estado}" th:value="${solicitud.estado}" />
+					<div class="articulo">
+						<div class="col-12">
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h2>Solicitud</h2>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="inputOficina" class="col-sm-15 col-form-label">Oficina
+										: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" th:field="*{oficina}"
+										id="oficinaInput" name="oficinaInput" maxlength="15"
+										th:value="${solicitud.oficina}" readonly>
+								</div>
+
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Oferta : </label>
+								</div>
+
+								<div class="col-md-2">
+									<select class="form-control" id="oferta"
+										th:field="${solicitud.oferta}">
+										<option value="4.1.4">4.1.4</option>
+										<option value="4.2.3">4.2.3</option>
+
+									</select>
+
+								</div>
+
+
+								<div class="col-md-1">
+									<label for="numeroSiaInput">Número de SIA : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input name="numeroSiaInput" id="numeroSiaInput" required
+										pattern="\d{4}\s\d{2}\s\d{7}" placeholder="#### ## #######"
+										type="text" class="form-control"
+										th:field="${solicitud.numeroSIA}"
+										onblur="javascript:validaNumeroSia();" maxlength="15" value="">
+
+								</div>
+
+								<div class="col-md-1">
+									<label class="col-sm-15 col-form-label">Fecha Solicitud
+										: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="date" class="form-control"
+										th:field="*{fechaSolicitudOperacionString}"
+										id="fechaSolicitudOperacionInput"
+										name="fechaSolicitudOperacionInput" maxlength="15"
+										th:value="${solicitud.fechaSolicitudOperacionString}">
+										<input type="hidden" class="form-control"
+										th:field="*{fechaAlta}"
+										id="fechaSolicitudOperacionInput"
+										name="fechaSolicitudOperacionInput" maxlength="15"
+										th:value="${solicitud.fechaAlta}">
+								</div>
+							</div>
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Cliente</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="inputOficina">Nombre : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="nombreInput"
+										th:field="${solicitud.nombreCliente}" value="" required>
+								</div>
+								<div class="col-md-1">
+									<label for="direccionInput">Dirección : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="direccionInput"
+										th:field="${solicitud.direccionActividad}" value="" required>
+								</div>
+								<div class="col-md-1">
+									<label for="poblacionInput">Población : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="poblacionInput"
+										th:field="${solicitud.poblacionActividad}" value="" required>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="nifInput">NIF : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="nifInput"
+										th:field="${solicitud.CIF}" required value="" name="nifInput"
+										onblur="javascript:isDNI()">
+								</div>
+
+								<div class="col-md-1">
+									<label for="codPostInput">Código Postal: &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="codPostInput"
+										name="codPostInput"
+										th:field="${solicitud.codigoPostalCliente}" maxlength="5"
+										value="" onblur="javascript:validaCodigoPostal()" required>
+								</div>
+							</div>
+							<br>
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Segmentacion del Cliente</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+
+									<label for="numEmplUltimoAnyoInput">Número empleados
+										último año cerrado : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="numEmplUltimoAnyoInput" name="numEmplUltimoAnyoInput"
+										value="" th:field="${solicitud.numeroEmpleadosUltimoAnyo}"
+										onblur="javascript:validaCampoNumerico('numEmplUltimoAnyoInput');"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="numEmplActInput">Número de empleados año en
+										curso : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="numEmplActInput"
+										name="numEmplActInput" value=""
+										th:field="${solicitud.numeroEmpleadosAnyoEnCurso}"
+										onblur="javascript:validaCampoNumerico('numEmplActInput')"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="factUltimoAnyoInput">Facturación último año
+										cerrado : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="factUltimoAnyoInput" name="factUltimoAnyoInput" value=""
+										th:field="${solicitud.facturacionUltimoAnyo}"
+										onblur="javascript:checkCampoMoneda('factUltimoAnyoInput');"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="factActAnyoInput">Facturación año en curso
+										:&nbsp; </label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="factActAnyoInput"
+										name="factActAnyoInput" value=""
+										th:field="${solicitud.facturacionAnyoCurso}"
+										onblur="javascript:checkCampoMoneda('factActAnyoInput')"
+										required>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<label for="porcentajePorOtraInput">¿En qué porcentaje
+										está participada por otra entidad no PYME? : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="porcentajePorOtraInput" name="porcentajePorOtraInput"
+										maxlength="2" value=""
+										th:field="${solicitud.porcentajePorOtraEntidad}"
+										 required>
+								</div>
+								<div class="col-md-1">
+									<label for="balanceUltimoAnyoInput">Balance último año
+										cerrado : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="balanceUltimoAnyoInput" name="balanceUltimoAnyoInput"
+										value="" th:field="${solicitud.balanceUltimoAnyo}"
+										onblur="javascript:checkCampoMoneda('balanceUltimoAnyoInput');"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="balanceActInput">Balance año en curso :
+										&nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="balanceActInput"
+										name="balanceActInput" value=""
+										th:field="${solicitud.balanceAnyoCurso}"
+										onblur="javascript:checkCampoMoneda('balanceActInput')"
+										required>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-4">
+									<label for="porcentajeEnOtraInput">¿En qué porcentaje
+										participa en otra entidad no PYME?: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="porcentajeEnOtraInput" name="porcentajeEnOtraInput"
+										maxlength="2" value=""
+										th:field="${solicitud.porcentajeEnOtraEntidad}"
+										required>
+								</div>
+								<div class="col-md-1">
+									<span class="input-group-addon"> Segmento : </span>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" th:field="${solicitud.segmento}"
+										id="segmento" name="segmento">
+										<option value="PYME">PYME</option>
+										<option value="NO PYME">NO PYME</option>
+
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="cnaeClienteInput">CNAE Cliente : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="cnaeClienteInput"
+										name="cnaeClienteInput" value="" th:field="${solicitud.CNAE}"
+										maxlength="5"
+										onblur="javascript:validaCampoNumerico('cnaeClienteInput')"
+										required>
+								</div>
+							</div>
+
+							<br>
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Finalidad Operación</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<span class="input-group-addon"> Finalidad : </span>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" id="finalidad" name="finalidad"
+										th:field="${solicitud.finalidad}">
+										<!-- option value="Circulante">Circulante</option-->
+										<option value="Inversion">Inversion</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="importeFinanciaciónInput">Importe
+										Financiación : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="importeFinanciacionInput" name="importeFinanciacionInput"
+										value="" th:field="${solicitud.importeFinanciacion}"
+										onblur="javascript:checkCampoMoneda('importeFinanciacionInput');calculoImporteGarantiaBEI()"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="importeGarantiaBEIInput">Importe garantía
+										BEI : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										id="importeGarantiaBEIInput" name="importeGarantiaBEIInput"
+										value="" readonly th:field="${solicitud.importeGarantiaBEI}"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="importeDesinadoCirculanteInput">Importe
+										destinado a circulante: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" name="importeDestinadoCirculanteInput"
+										class="form-control" id="importeDestinadoCirculanteInput"
+										value="" th:field="${solicitud.importeDestinadoCirculante}"
+										onblur="javascript:checkCampoMoneda('importeDestinadoCirculanteInput');calculoImporteDestinadoCirculante()"
+										required>
+								</div>
+							</div>
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Información para Report</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="direccionProyInput">Calle : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="direccionProyInput"
+										value="" th:field="${solicitud.calleProyectoInversion}"
+										required>
+								</div>
+								<div class="col-md-1">
+									<label for="poblacionProyInput">Ciudad : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="poblacionProyInput"
+										value="" th:field="${solicitud.ciudadProyectoInversion}"
+										required>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="codPostProyInput">Código Postal: &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="codPostProyInput"
+										name="codPostProyInput" value="" maxlength="5"
+										th:field="${solicitud.codigoPostalProyectoInversion}"
+										onblur="javascript:validaCodigoPostalProyInv()" required>
+								</div>
+
+								<div class="col-md-1">
+									<label for="paisProyInput">País : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="paisProyInput"
+										value="" th:field="${solicitud.paisProyectoInversion}"
+										required>
+								</div>
+							</div>
+
+							<br>
+
+
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Datos Proyectos</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<span class="input-group-addon"> CNAE del Proyecto : </span>
+								</div>
+								<div class="col-md-8">
+									<select class="form-control" id="cnae" name="cnae" required
+										th:field="${solicitud.CNAEproyecto}"
+										onchange="javascript:cambioCnae()">
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="dentroFuera">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dentro-fuera
+										Anexo I : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" id="comboDentroFuera"
+										th:field="${solicitud.dentroFuera}">
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="fechaInicioPrevisto">Fecha Prevista Inicio
+										: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="date" data-date-format="dd/mm/yyyy"
+										placeholder="dd/mm/yyyy" class="form-control"
+										th:field="${solicitud.fechaPrevistaInicio}"
+										id="fechaInicioPrevistoInput" value="" required>
+								</div>
+								<div class="col-md-1">
+									<label for="fechaFinPrevisto">Fecha Prevista Fin :
+										&nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="date" data-date-format="DD MM YYYY"
+										placeholder="DD MM AAAA" class="form-control"
+										th:field="${solicitud.fechaPrevistaFin}"
+										id="fechaFinPrevistoInput" value="" required>
+								</div>
+
+								<div class="col-md-1">
+									<label for="importeTotalInput">Importe Total: &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="importeTotalInput"
+										name="importeTotalInput" th:field="${solicitud.importeTotal}"
+										value=""
+										onblur="javascript:checkCampoMoneda('importeTotalInput')"
+										required>
+								</div>
+
+								<div class="col-md-1">
+									<span class="input-group-addon"> Código NUTS : </span>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" id="nuts"
+										th:field="${solicitud.nuts}">
+										<option value="ES611">Almería</option>
+										<option value="ES612">Cádiz</option>
+										<option value="ES613">Córdoba</option>
+										<option value="ES614">Granada</option>
+										<option value="ES615">Huelva</option>
+										<option value="ES616">Jaén</option>
+										<option value="ES617">Málaga</option>
+										<option value="ES618">Sevilla</option>
+
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="descripcionInput">Descripción : &nbsp;</label>
+								</div>
+								<div class="col-md-5">
+									<textarea class="form-control" id="descripcionInput"
+										th:field="${solicitud.descripcion}" value="" required></textarea>
+								</div>
+								<div class="col-md-1">
+									<label for="comentariosInput">Comentarios : &nbsp;</label>
+								</div>
+								<div class="col-md-5">
+									<textarea class="form-control" id="comentariosInput"
+										th:field="${solicitud.comentarios}" value="" required></textarea>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<span class="input-group-addon"> ¿Tiene garantías
+										adicionales? : </span>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" id="garantiaAdicional"
+										name="garantiaAdicional"
+										th:field="${solicitud.garantiasAdicionales}"
+										onchange="javascript:checkGarantias()">
+										<option value="SI">SI</option>
+										<option value="NO">NO</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+
+									<label for="garantiaAdicionalInput">Valor Garantía
+										Adicional : &nbsp;</label>
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control"
+										th:field="${solicitud.valorGarantiaAdicional}"
+										id="valorGarantiaAdicional" name="valorGarantiaAdicional"
+										onblur="javascript:checkCampoMoneda('valorGarantiaAdicional')"
+										value="" required>
+								</div>
+								<div class="col-md-1">
+									<span class="input-group-addon"> Tipo de Garantía
+										Adicional : </span>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" id="tipoGarantiaAdicional"
+										name="tipoGarantiaAdicional"
+										th:field="${solicitud.tipoGarantiaAdicional}">
+										<option value="PERSONAL">PERSONAL</option>
+										<option value="PIGNORATICIA">PIGNORATICIA</option>
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-5">
+									<label for="descripcionInput">¿Inversión destinada a
+										actividades que requieren autorización específica?&nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control"
+										id="inversionActividadesAutorizacionEsp"
+										name="inversionActividadesAutorizacionEsp"
+										onchange="javascript:checkInversionActividadesEsp()"
+										th:field="${solicitud.inversionActividadesAutorizacionEsp}">
+										<option value="SI">SI</option>
+										<option value="NO" selected>NO</option>
+									</select>
+								</div>
+							</div>
+							<label style="display: none" id="autorizacionEspecificaLabel">Se
+								necesita el documento obligatorio: &nbsp;</label> <label
+								style="display: none" id="autorizacionLabel">⦁
+								Autorización Específica </label> <br>
+							<div class="row">
+								<div class="col-md-5">
+									<label for="comentariosInput">¿Inversión en
+										regadío?&nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" id="inversionEnRegadio"
+										name="inversionEnRegadio"
+										th:field="${solicitud.inversionEnRegadio}"
+										onchange="javascript:checkInversionEnRegadio()">
+										<option value="SI">SI</option>
+										<option value="NO" selected>NO</option>
+									</select>
+								</div>
+							</div>
+
+							<label style="display: none" id="documentosLabel">Se
+								necesitan los documentos obligatorios : &nbsp;</label> <label
+								style="display: none" id="certificadoLabel">⦁
+								Certificado expedido por la comunidad de regantes
+								correspondiente que confirma la disponibilidad de agua para el
+								riego. </label> <label style="display: none" id="resolucionLabel">⦁
+								Resolución de la Autoridad de Cuenca de la disponibilidad de
+								agua para el riego. &nbsp;</label> <label style="display: none"
+								id="compromisoLabel">⦁ Compromiso de ahorro y reducción
+								del consumo. Informe elaborado por un técnico competente con una
+								evaluación previa del ahorro de agua de riego en la explotación
+								para garantizar que los requisitos de elegibilidad se ajustan a
+								lo establecido en el artículo 46 del Reglamento (UE) 1305/2013
+								&nbsp;</label>
+
+
+<br>
+							<div class="col-12 d-flex justify-content-left p-3 pl-5"
+								style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+								<h5>Cálculo de Ayudas</h5>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-6"></div>
+								<div class="col-md-4">
+									<label for="importeAyudasInput">Importe de ayudas
+										declaradas recibidas últimos tres años : &nbsp;</label>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="importeAyudasInput"
+										value="" th:field="${solicitud.importeAyudasUltimosTresAnyos}"
+										onblur="javascript:checkCampoMoneda('importeAyudasUltimosTresAnyos')"
+										required>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-1">
+									<label for="otrosInput">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otros
+										: &nbsp;</label>
+								</div>
+								<div class="col-md-11">
+									<input type="text" class="form-control" id="otrosInput"
+										value="" th:field="${solicitud.otros}" required>
+								</div>
+							</div>
+<br>
+							<div class="row">
+								<div class="col-md-10"></div>
+								<div class="col-md-2">
+<!-- 								<input type=button class="btn btn-success" -->
+<!-- 										onclick="validarSegmento()" value="Enviar a BO"> onclick="validarSegmento()"-->
+									<button class="btn btn-primary btn-lg" 
+										id="btnAceptarAltaSolicitud" type="submit" name="action"
+										value="aceptar">Enviar a BO</button>
+
+								</div>
+							</div></div>
+							</div>
+							</form>
+</div>
+</div>
+</div>
+	<footer class="mt-auto d-flex justify-content-center p-3"
+		style="background-color: #F2F2F2; font-family: Arial; color: #6E6E6E; font-size: 1em;">
+		&copy; CaixaBank, S.A. 2022 </footer>
+
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

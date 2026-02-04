@@ -1,0 +1,1 @@
+copy C:\EntornoJava\Workspaces\WorkspaceWF\LukeWeb\target\LukeWeb.war C:\EntornoJava\WildFly\wildfly-15.0.1.Final\standalone\deployments

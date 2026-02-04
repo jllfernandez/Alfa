@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>JSon</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/tree.js}"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script type="text/javascript">
+	
+	function loadTree() {
+		var tree = document.getElementById("tree").value;
+		var json_data = JSON.parse(tree);
+
+		var result = new Array;
+
+		for ( var i in json_data) {
+			//result.push([json_data [i].nodeId+"|"+json_data [i].parentNodeId+"|"+json_data [i].nodeName+"|"+json_data [i].nodeUrl]);
+			result[i] = "" + json_data[i].nodeId + "|"
+					+ json_data[i].parentNodeId + "|" + json_data[i].nodeName
+					+ "|" + json_data[i].nodeUrl;
+		}
+
+		return result;
+	}
+
+	
+</script>
+</head>
+
+<body th:object="${documentoFilter}">
+
+	<input type="hidden" id="tree" th:value="${documentoFilter}" />
+
+
+	<b><a href="http://www.destroydrop.com/">destroydrop</a> &raquo; <a
+		href="http://www.destroydrop.com/javascripts/">JavaScripts</a> Aaa <a
+		href="http://www.destroydrop.com/javascripts/tree/">Tree</a></b>
+	<br />
+
+	<br />
+	<br />
+
+	<b>Example 1:</b>
+	<br />
+	<br />
+
+	<div class="tree">
+		<script type="text/javascript">
+			createTree(loadTree());
+		</script>
+	</div>
+
+	<br />
+	<br />
+
+	<a href="mailto:drop@destroydrop.com">drop@destroydrop.com</a>
+
+</body>
+
+</html>

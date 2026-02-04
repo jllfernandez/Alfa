@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="es">
+<head>
+<title>JSon</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css} " />
+<link rel="stylesheet" href="static/css/nero.css"
+	th:href="@{/css/nero.css}">
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/core/tree/core.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+<script type="text/javascript">
+	function mountArbol22() {
+		peticionGetAjax('/Bie/cargaTree2', cbMountArbol22);
+	}
+
+	function cbMountArbol22(response) {
+
+		const json_data = response;
+
+		var result = new Array;
+		var arbol = "1";
+
+		for ( var i in json_data) {
+			result[i] = "" + json_data[i].nodeId + "|"
+					+ json_data[i].parentNodeId + "|" + json_data[i].nodeName
+					+ "|" + json_data[i].nodeType;
+
+		}
+
+		borraDiv("tree4");
+		
+		createTree("tree4", result);
+
+		return;
+	}
+	
+	function mountArbol23() {
+		peticionGetAjax('/Bie/cargaRaiz', cbMountArbol23);
+	}
+
+	function cbMountArbol23(response) {
+
+		const json_data = response;
+		var arbol = "2";
+
+		var result = new Array;
+
+		for ( var i in json_data) {
+			result[i] = "" + json_data[i].nodeId + "|"
+					+ json_data[i].parentNodeId + "|" + json_data[i].nodeName
+					+ "|" + json_data[i].nodeType;
+
+		}
+
+		borraDiv("tree5");
+		createTree("tree5", result);
+
+		return;
+	}
+</script>
+</head>
+
+<body>
+
+
+	<b><a href="http://www.destroydrop.com/">destroydrop</a> &raquo; <a
+		href="http://www.destroydrop.com/javascripts/">JavaScripts</a> Aaa <a
+		href="http://www.destroydrop.com/javascripts/tree/">Tree</a></b>
+	<br />
+
+	<br />
+	<br />
+
+	<b>Limpiar:</b>
+	<br />
+	<br />
+
+
+	<div class="tree" id="tree4">
+		<script type="text/javascript" th:src="@{/js/tree/rendererTree4.js}"></script>
+		<script type="text/javascript">
+		
+			var arbol = new Array;
+			arbol[0] = "1|0|Root|1";
+			createTree("tree4", arbol);
+		</script>
+	</div>
+
+
+
+	<div class="tree" id="tree5">
+	<script type="text/javascript" th:src="@{/js/tree/rendererTree5.js}"></script>
+		<script type="text/javascript">
+			var otro = new Array;
+			//otro[0] = "1|0|Raiz|1";
+			createTree("tree5", otro);
+		</script>
+	</div>
+	<br />
+	<br />
+
+	<a href="javascript:mountArbol22();">Peticion Ajax III</a>
+	
+	<a href="javascript:mountArbol23();">Peticion Ajax IV</a>
+
+</body>
+
+</html>
